@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scripty - Gaming Discovery & Guides</title>
+  <meta name="description" content="Discover popular games, explore useful guides, tips, and gaming resources in one place.">
+  <style>
+    /* ==========================================================================
+       1. VISUAL IDENTITY & CSS VARIABLES (Dark Neon & Glassmorphism)
+       ========================================================================== */
+    :root {
+      --bg-dark: #0a0a0f;
+      --bg-card: rgba(255, 255, 255, 0.04);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --neon-accent: #00f0ff;
+      --neon-glow: rgba(0, 240, 255, 0.3);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --radius: 14px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      transition: var(--transition);
+    }
+
+    .glass {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ==========================================================================
+       2. HEADER & NAVIGATION
+       ========================================================================== */
+    header {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+    }
+
+    .logo span {
+      color: var(--neon-accent);
+      text-shadow: 0 0 12px var(--neon-glow);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--neon-accent);
+    }
+
+    .hamburger {
+      display: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-main);
+    }
+
+    /* ==========================================================================
+       3. LAYOUT & VIEWS SYSTEM
+       ========================================================================== */
+    main {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      flex: 1;
+    }
+
+    .view {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .view.active-view {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero {
+      text-align: center;
+      padding: 4rem 1rem;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 350px;
+      height: 250px;
+      background: radial-gradient(circle, var(--neon-glow) 0%, transparent 70%);
+      z-index: -1;
+      opacity: 0.6;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.8rem 1.8rem;
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background: var(--neon-accent);
+      color: #000;
+      box-shadow: 0 0 20px var(--neon-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px var(--neon-glow);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--glass-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ==========================================================================
+       4. GAME CARDS & GRID
+       ========================================================================== */
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .game-card {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .game-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(0, 240, 255, 0.4);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.5), 0 0 15px var(--neon-glow);
+    }
+
+    .card-img-container {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 Aspect Ratio */
+      background: #151520;
+      overflow: hidden;
+    }
+
+    .card-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .game-card:hover .card-img {
+      transform: scale(1.05);
+    }
+
+    .card-body {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .card-platforms {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .platform-tag {
+      background: rgba(255, 255, 255, 0.06);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .card-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 1.2rem;
+      flex: 1;
+    }
+
+    .card-btn {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      color: var(--neon-accent);
+      padding: 0.6rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+
+    .game-card:hover .card-btn {
+      background: var(--neon-accent);
+      color: #000;
+    }
+
+    .search-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      border-radius: 50px;
+      background: var(--bg-card);
+      border: 1px solid var(--glass-border);
+      color: var(--text-main);
+      font-size: 1rem;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .search-input:focus {
+      border-color: var(--neon-accent);
+      box-shadow: 0 0 15px var(--neon-glow);
+    }
+
+    /* PAGINATION STYLES */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .page-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--glass-border);
+      color: var(--text-main);
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 600;
+    }
+
+    .page-btn:hover:not(:disabled) {
+      background: rgba(0, 240, 255, 0.2);
+      border-color: var(--neon-accent);
+      color: var(--neon-accent);
+    }
+
+    .page-btn.active {
+      background: var(--neon-accent);
+      color: #000;
+      border-color: var(--neon-accent);
+      box-shadow: 0 0 10px var(--neon-glow);
+    }
+
+    .page-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ==========================================================================
+       5. GAME DETAIL VIEW & INTEGRATED CPA UNLOCK SECTION
+       ========================================================================== */
+    .detail-hero {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .detail-hero {
+        flex-direction: row;
+        align-items: center;
+      }
+    }
+
+    .detail-media {
+      flex: 1;
+      height: 300px;
+      border-radius: var(--radius);
+      background: #151520;
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+    }
+
+    .detail-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .detail-info {
+      flex: 1;
+    }
+
+    .detail-info h1 {
+      font-size: 2.2rem;
+      margin: 0.5rem 0;
+    }
+
+    .article-body {
+      background: var(--bg-card);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .article-body h2 {
+      color: var(--neon-accent);
+      margin: 1.8rem 0 0.8rem;
+      font-size: 1.4rem;
+    }
+
+    .article-body h2:first-child {
+      margin-top: 0;
+    }
+
+    .article-body p {
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    /* CPA Locker Container */
+    .unlock-container {
+      margin: 3.5rem auto 1.5rem;
+      max-width: 680px;
+      text-align: center;
+      padding: 2.5rem 1.8rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .unlock-badge {
+      display: inline-block;
+      background: rgba(0, 240, 255, 0.1);
+      color: var(--neon-accent);
+      border: 1px solid var(--neon-accent);
+      padding: 0.3rem 1rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      margin-bottom: 1rem;
+    }
+
+    .unlock-container h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .unlock-container p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Username Input Step */
+    .username-step {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 320px;
+      margin: 0 auto 1rem auto;
+    }
+
+    .username-input {
+      width: 100%;
+      padding: 1rem;
+      border-radius: var(--radius);
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--glass-border);
+      color: var(--text-main);
+      font-size: 1rem;
+      text-align: center;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .username-input:focus {
+      border-color: var(--neon-accent);
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+    }
+
+    .ogads-locker-box {
+      padding: 2.5rem 1.5rem;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px dashed var(--glass-border);
+      border-radius: var(--radius);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .connected-user-text {
+      color: #10b981;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ==========================================================================
+       6. FOOTER & MISC
+       ========================================================================== */
+    footer {
+      background: rgba(0, 0, 0, 0.6);
+      border-top: 1px solid var(--glass-border);
+      padding: 3rem 1.5rem 2rem;
+      margin-top: auto;
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-col h4 {
+      color: var(--neon-accent);
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .footer-col ul {
+      list-style: none;
+    }
+
+    .footer-col ul li {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-col ul li a {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .footer-col ul li a:hover {
+      color: var(--text-main);
+    }
+
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+      padding-top: 2rem;
+      border-top: 1px solid var(--glass-border);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: rgba(10, 10, 15, 0.98);
+        border-bottom: 1px solid var(--glass-border);
+        flex-direction: column;
+        padding: 1.5rem;
+        gap: 1.2rem;
+      }
+
+      .nav-links.show {
+        display: flex;
+      }
+
+      .hamburger {
+        display: block;
+      }
+
+      .games-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="nav-container">
+      <div class="logo" onclick="navigateTo('home')">Scrip<span>ty</span></div>
+      <nav>
+        <ul class="nav-links" id="navLinks">
+          <li><a onclick="navigateTo('home')" id="nav-home" class="active">Home</a></li>
+          <li><a onclick="navigateTo('games')" id="nav-games">Games</a></li>
+          <li><a onclick="navigateTo('guides')" id="nav-guides">Guides</a></li>
+          <li><a onclick="navigateTo('about')" id="nav-about">About</a></li>
+        </ul>
+      </nav>
+      <div class="hamburger" onclick="toggleMobileMenu()">☰</div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT VIEWS -->
+  <main>
+
+    <!-- HOME VIEW -->
+    <section id="view-home" class="view active-view">
+      <div class="hero">
+        <h1>Discover Your Next<br><span style="color: var(--neon-accent);">Favorite Game</span></h1>
+        <p>Explore popular games, useful guides, updates, tips and gaming resources in one place.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="navigateTo('games')">Explore Games</button>
+          <button class="btn btn-secondary" onclick="navigateTo('guides')">Browse Guides</button>
+        </div>
+      </div>
+
+      <h2 class="section-title">Featured Games</h2>
+      <div class="games-grid" id="featuredGrid"></div>
+      <div style="text-align: center; margin-top: 2rem;">
+        <button class="btn btn-secondary" onclick="navigateTo('games')">View All Games &rarr;</button>
+      </div>
+    </section>
+
+    <!-- GAMES DIRECTORY VIEW -->
+    <section id="view-games" class="view">
+      <h1 class="section-title">Explore Games Directory</h1>
+
+      <div class="search-controls">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search games by name or description..." oninput="handleSearch()">
+      </div>
+
+      <!-- Grid fin ki bano les jeux -->
+      <div class="games-grid" id="directoryGrid"></div>
+      
+      <!-- Container dyal Pagination (les pages) -->
+      <div id="paginationControls"></div>
+    </section>
+
+    <!-- GUIDES VIEW -->
+    <section id="view-guides" class="view">
+      <h1 class="section-title">Gaming Guides & Resource Articles</h1>
+      <div class="games-grid">
+        <div class="game-card glass" onclick="alert('Select a game from the Games section to read its specific guide!')">
+          <div class="card-body">
+            <h3 class="card-title">Best Mobile Gaming Performance Settings</h3>
+            <p class="card-desc">Optimize frame rates, reduce input lag, and maximize battery efficiency on mobile devices.</p>
+            <div class="card-btn">Read Tips &rarr;</div>
+          </div>
+        </div>
+        <div class="game-card glass" onclick="alert('Select a game from the Games section to read its specific guide!')">
+          <div class="card-body">
+            <h3 class="card-title">Mastering Multiplayer Strategy</h3>
+            <p class="card-desc">Fundamental habits that will elevate your skill in battle royale and tactical arena titles.</p>
+            <div class="card-btn">Read Tips &rarr;</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT VIEW -->
+    <section id="view-about" class="view">
+      <h1 class="section-title">About Scripty</h1>
+      <div class="article-body">
+        <p>Scripty is a modern gaming discovery and informational platform dedicated to providing gamers with detailed game guides, beginner walkthroughs, strategy updates, and essential resource information across Mobile, PC, and Console platforms.</p>
+        <p>Our mission is to create a sleek, fast, and trustworthy space where players can level up their skills without navigating clutter.</p>
+      </div>
+    </section>
+
+    <!-- GAME DETAIL VIEW -->
+    <section id="view-detail" class="view">
+      <div id="detailContent"></div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-container">
+      <div class="footer-col">
+        <h4>Scripty</h4>
+        <p style="color: var(--text-muted); font-size: 0.88rem;">Your destination for gaming guides, updates, and resources.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a onclick="navigateTo('home')">Home</a></li>
+          <li><a onclick="navigateTo('games')">Games</a></li>
+          <li><a onclick="navigateTo('guides')">Guides</a></li>
+          <li><a onclick="navigateTo('about')">About Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a onclick="alert('Privacy Policy: We do not store personal data.')">Privacy Policy</a></li>
+          <li><a onclick="alert('Terms of Use: Content is provided for educational/informational purposes.')">Terms of Use</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 Scripty. All rights reserved.
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    // Zedt lik games jdad hna bach y3mro les pages
+    const gamesData = [
+      {
+        id: "Practical Basketball",
+        name: "Practical Basketball",
+        image: "https://i.postimg.cc/Y0rKcPtZ/images-(15).jpg",
+        platforms: ["iOS", "Android"],
+        description: "Practical Basketball Script Roblox (2026) is a powerful script made specifically for the Roblox game Practical Basketball.",
+        guide: {
+          about: "Practical Basketball Script Roblox (2026) is a powerful script made specifically for the Roblox game Practical Basketball. Get access to advanced features designed to improve your gameplay with a smooth, optimized, and reliable experience.",
+          tips: ["Auto Green.", " Auto Guard.", "Always Sprint."]
+        }
+      },
+      {
+        id: "Murder Mystery 2",
+        name: "Murder Mystery 2",
+        image: "https://i.postimg.cc/VLzybLHz/images-(16).jpg",
+        platforms: ["iOS", "Android", "PC"],
+        description: "This script for Grow a Garden 2 might be one of the best ones ive used, if not the best. Foxname GUI is Free and Keyless, with a large list of features that all work and still recieve updates.",
+        guide: {
+          about: "Roblox Murder Mystery 2 Foxname GUI has many overpowered features and requires no key! One of the BEST MM2 Scripts.",
+          tips: ["Auto Farm.", "Godmode.", "Aimbot."]
+        }
+      },
+      {
+        id: "Grow a Garden 2",
+        name: "Grow a Garden 2",
+        image: "https://i.postimg.cc/hP8xPgXt/images-(17).jpg",
+        platforms: ["Ios", "PC", "Android"],
+        description: "This script for Grow a Garden 2 might be one of the best ones ive used, if not the best.",
+        guide: {
+          about: "This script for Grow a Garden 2 might be one of the best ones ive used, if not the best.Foxname GUI is Free and Keyless, with a large list of features that all work and still recieve updates.",
+          tips: ["Auto Harvesting.", "Auto Plant.", "Auto Steal Fruits with Auto Fling Owner."]
+        }
+      },
+      {
+        id: "Animal Hospital",
+        name: "Animal Hospital",
+        image: "https://i.postimg.cc/k49PCxzG/images-(18).jpg",
+        platforms: ["PC", "Ios", "Android"],
+        description: "Explore infinite blocky worlds and build everything from simple homes to grand castles.",
+        guide: {
+          about: "Minecraft encourages creativity, survival skills, and exploration in a procedurally generated 3D world.",
+          tips: ["Always carry a bucket of water.", "Never dig straight down.", "Secure your shelter before your first night."]
+        }
+      },
+      {
+        id: "+1 Speed Keyboard Escape",
+        name: "+1 Speed Keyboard Escape",
+        image: "https://i.postimg.cc/XvNDg4Z5/no-Filter-(1).webp",
+        platforms: ["iOS", "Android"],
+        description: "Honestly, this script just makes the game way less annoying to grind. If you’ve played +1 Speed Keyboard Escape, you already know how easy it is to mess up and get sent back after building up speed for a while.",
+        guide: {
+          about: "The game itself is pretty simple — you run through candy-themed obbies, gain speed with every step, and try not to fall. More speed = better progress, but also harder control.",
+          tips: ["Auto wins.", "Auto rebirth.", "Auto hatch eggs."]
+        }
+      },
+      {
+        id: "99 Nights in the Forest",
+        name: "99 Nights in the Forest",
+        image: "https://i.postimg.cc/PxKQSwDT/no-Filter-(2).webp",
+        platforms: ["iOS", "Android"],
+        description: "An INSANE Script for Roblox 99 Nights in the Forest, which is completely Free and requires No Key.",
+        guide: {
+          about: "An INSANE Script for Roblox 99 Nights in the Forest, which is completely Free and requires No Key.Voidware Script still recieves regular updates, and is the BEST for 99 Nights with having hundreds of features to help you survive!.",
+          tips: ["Auto Complet Campfire.", "Infinite Saplings.", "Bring ANY Item that is loaded in."]
+        }
+      },
+      {
+        id: "Brookhaven",
+        name: "Brookhaven",
+        image: "https://i.postimg.cc/g0bFvn8n/no-Filter-(3).webp",
+        platforms: ["PC", "iOS", "Android"],
+        description: "One of the BEST and Oldest Scripts for Roblox Brookhaven RP that is still regularly updated by the SP Hub team!.",
+        guide: {
+          about: "SP Hub is free and keyless, with Features ranging from being fully FE (visual to all players) to getting Dev Tools.The Hub script is Mobile Friendly -with the whole UI being Mobile focuse.",
+          tips: ["Local Player and ESP.", "Teleport.", "Kill any Player and Auto Kill."]
+        }
+      },
+      {
+        id: "Steal a Brainrot",
+        name: "Steal a Brainrot",
+        image: "https://i.postimg.cc/0NbnM9TM/no-Filter-(5).webp",
+        platforms: ["PC", "iOS", "Android"],
+        description: "Roblox Script for Steal a Brainrot.",
+        guide: {
+          about: "The Script is Keyless/No Key Has Many Features, With All the ones you would need to Complete the game.",
+          tips: ["Instant Steal.", "Anti Hit.", "Noclip."]
+        }
+      },
+      /* --- GAMES JDAD ZEDTHOM LIK BASH YBANO F LES PAGES L'KHRIN --- */
+      {
+        id: "Ball VS Ball",
+        name: "Ball VS Ball",
+        image: "https://i.postimg.cc/vHh7YBHM/images-(21).jpg",
+        platforms: ["PC", "iOS", "Android"],
+        description: "Pick a ball. Watch it fight!.",
+        guide: {
+          about: "Pick a ball. Watch it fight!.",
+          tips: ["Auto Duel.", "Free pick.", "Auto claim mail."]
+        }
+      },
+      {
+        id: "Huss Valley",
+        name: "Huss Valley",
+        image: "https://i.postimg.cc/0jMg83DB/no-Filter-(6).webp",
+        platforms: ["PC", "iOS", "Android"],
+        description: "Huss Valley.",
+        guide: {
+          about: "Huss Valley.",
+          tips: ["AutoDodge.", "SpeedHack.", "AutoCatch."]
+        }
+      },
+      {
+        id: "Ride A Pet",
+        name: "Ride A Pet",
+        image: "https://i.postimg.cc/jdt93LkZ/no-Filter-(7).webp",
+        platforms: ["PC", "iOS", "Android"],
+        description: "Ride A Pet!.",
+        guide: {
+          about: "Ride A Pet!.",
+          tips: ["Auto Pickup.", "Rarity Filter.", "Rarity Filter."]
+        }
+      },
+      {
+        id: "Steal An Egg",
+        name: "Steal An Egg",
+        image: "https://i.postimg.cc/gk2s6R7Y/no-Filter-(8).webp",
+        platforms: ["PC", "iOS", "Android"],
+        description: "Welcome to Steal An Egg!.",
+        guide: {
+          about: "Welcome to Steal An Egg!.",
+          tips: ["Egg ESP.", "Auto Steal.", "Auto Hatch."]
+        }
+      },
+      {
+        id: "Slayers 2",
+        name: "Slayers 2",
+        image: "https://i.postimg.cc/cHdwGGyW/no-Filter-(9).webp",
+        platforms: ["PC", "iOS", "Android"],
+        description: "Mobile and Console users can edit their Aim Assist sensitivity in settings!",
+        guide: {
+          about: "Mobile and Console users can edit their Aim Assist sensitivity in settings!.",
+          tips: ["Auto Queue.", "Ranked Queue.", "Auto Join World."]
+        }
+      },
+      {
+        id: "Adopt Me",
+        name: "Adopt Me",
+        image: "https://i.postimg.cc/MK2bvtGg/no-Filter-(10).webp",
+        platforms: ["PC", "iOS", "Android"],
+        description: "Axon Hub is a Adopt Me script built for auto farm, ESP, combat, movement and easier grinding.",
+        guide: {
+          about: "Get rich in Adopt Me without playing. This script automatically fulfills your pet's needs to farm bucks.",
+          tips: ["Auto Tasks.", "Auto Buy Eggs.", " Master Auto."]
+        }
+      }
+    ];
+
+    let searchQuery = '';
+    
+    // Variables dyal Pagination
+    let currentPage = 1;
+    const itemsPerPage = 8; // ch7al mn jeu bghiti f kol page (t9der tbdlha)
+
+    function navigateTo(viewId) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
+      const targetView = document.getElementById(`view-${viewId}`);
+      if (targetView) targetView.classList.add('active-view');
+
+      document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+      const activeNav = document.getElementById(`nav-${viewId}`);
+      if (activeNav) activeNav.classList.add('active');
+
+      document.getElementById('navLinks').classList.remove('show');
+      window.scrollTo(0, 0);
+    }
+
+    function toggleMobileMenu() {
+      document.getElementById('navLinks').classList.toggle('show');
+    }
+
+    function renderCard(game) {
+      const platformsHTML = game.platforms.map(p => `<span class="platform-tag">${p}</span>`).join('');
+
+      return `
+        <div class="game-card glass" onclick="openGameDetail('${game.id}')">
+          <div class="card-img-container">
+            <img src="${game.image}" alt="${game.name}" class="card-img">
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">${game.name}</h3>
+            <div class="card-platforms">${platformsHTML}</div>
+            <p class="card-desc">${game.description}</p>
+            <div class="card-btn">View Script &rarr;</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderHome() {
+      const featuredGrid = document.getElementById('featuredGrid');
+      if (featuredGrid) {
+        // F page Home gha nbanou gha 4 dyal les jeux lowlin bash may3mrch bzf
+        featuredGrid.innerHTML = gamesData.slice(0, 4).map(renderCard).join('');
+      }
+    }
+
+    // Fonction jdida dyal Pagination
+    function renderDirectory() {
+      const directoryGrid = document.getElementById('directoryGrid');
+      const paginationControls = document.getElementById('paginationControls');
+      if (!directoryGrid) return;
+
+      // Filtrer les jeux 3la 7sab search
+      const filtered = gamesData.filter(game => {
+        return game.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+               game.description.toLowerCase().includes(searchQuery.toLowerCase());
+      });
+
+      // Hsab ch7al mn page 3ndna
+      const totalPages = Math.ceil(filtered.length / itemsPerPage);
+
+      // ila drti search u l9a chwia dyal les jeux, kiy redna l page 1
+      if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
+      if (totalPages === 0) currentPage = 1;
+
+      // 9te3 les jeux dyal had la page
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const paginatedItems = filtered.slice(startIndex, startIndex + itemsPerPage);
+
+      if (filtered.length === 0) {
+        directoryGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-muted);">No games found matching your search.</div>`;
+        paginationControls.innerHTML = '';
+      } else {
+        directoryGrid.innerHTML = paginatedItems.map(renderCard).join('');
+        renderPagination(totalPages);
+      }
+    }
+
+    function renderPagination(totalPages) {
+      const paginationControls = document.getElementById('paginationControls');
+      
+      // Ila kant ghir page we7da, maybnouch les boutons
+      if (totalPages <= 1) {
+        paginationControls.innerHTML = '';
+        return;
+      }
+
+      let html = `<div class="pagination">`;
+      
+      // Bouton Précédent (Prev)
+      html += `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">&laquo; Prev</button>`;
+      
+      // Les numéros dyal pages
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="page-btn ${currentPage === i ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+      }
+      
+      // Bouton Suivant (Next)
+      html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">Next &raquo;</button>`;
+      
+      html += `</div>`;
+      paginationControls.innerHTML = html;
+    }
+
+    function changePage(page) {
+      currentPage = page;
+      renderDirectory();
+      // Ytle3 lfou9 mni tbedel la page
+      const gamesView = document.getElementById('view-games');
+      const headerOffset = 80;
+      const elementPosition = gamesView.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+    }
+
+    function handleSearch() {
+      searchQuery = document.getElementById('searchInput').value;
+      currentPage = 1; // nredoh l page 1 mni kiy dir search jdid
+      renderDirectory();
+    }
+
+    function processUsername() {
+      const usernameInput = document.getElementById('gameUsername');
+      const username = usernameInput.value.trim();
+      const btn = document.getElementById('connectBtn');
+
+      if (!username) {
+        alert('Please enter your game username first.');
+        usernameInput.focus();
+        return;
+      }
+
+      btn.innerText = 'Connecting...';
+      btn.style.opacity = '0.7';
+      usernameInput.disabled = true;
+      btn.disabled = true;
+
+      setTimeout(() => {
+        document.getElementById('step-username').classList.add('hidden');
+        document.getElementById('step-locker').classList.remove('hidden');
+        document.getElementById('locker-title').innerText = 'Verification Required';
+        document.getElementById('locker-desc').innerText = 'Complete the required verification action below to unlock the content for your account.';
+        document.getElementById('connected-user').innerHTML = `&#10004; Connected as: <strong>${username}</strong>`;
+      }, 1500);
+    }
+
+    function openGameDetail(gameId) {
+      const game = gamesData.find(g => g.id === gameId);
+      if (!game) return;
+
+      const detailContent = document.getElementById('detailContent');
+      const platformsHTML = game.platforms.map(p => `<span class="platform-tag">${p}</span>`).join('');
+
+      const relatedGames = gamesData.filter(g => g.id !== game.id).slice(0, 3).map(renderCard).join('');
+
+      detailContent.innerHTML = `
+        <div class="detail-hero glass">
+          <div class="detail-media">
+            <img src="${game.image}" alt="${game.name}" class="detail-img">
+          </div>
+          <div class="detail-info">
+            <h1>${game.name}</h1>
+            <div class="card-platforms" style="margin-bottom: 1rem;">${platformsHTML}</div>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">${game.description}</p>
+            <a href="#guide-article" class="btn btn-primary">Jump to Script</a>
+          </div>
+        </div>
+
+        <article class="article-body" id="guide-article">
+          <h2>About ${game.name}</h2>
+          <p>${game.guide.about}</p>
+
+          <h2>Main Features:</h2>
+          <ul>
+            ${game.guide.tips.map(tip => `<li style="margin-left: 1.2rem; margin-bottom: 0.5rem; color: var(--text-muted);">${tip}</li>`).join('')}
+          </ul>
+
+          <div class="unlock-container glass">
+            <span class="unlock-badge">CONTINUE</span>
+            <h3 id="locker-title">Enter Your Username</h3>
+            <p id="locker-desc">Please enter your ${game.name} username or ID to continue to the full Script.</p>
+
+            <div id="step-username" class="username-step">
+              <input type="text" id="gameUsername" class="username-input" placeholder="Your Username / ID" required>
+              <button id="connectBtn" class="btn btn-primary" onclick="processUsername()">Connect Account</button>
+            </div>
+
+            <div id="step-locker" class="hidden">
+              <div id="connected-user" class="connected-user-text"></div>
+              <div class="ogads-locker-box">
+                <h3 style="color: var(--text-main); margin-bottom: 15px;">Anti-Bot Verification</h3>
+                <p style="margin-bottom: 20px;">Please complete a quick verification to unlock your script.</p>
+                <a href="https://appcomplete.org/cl/i/l7vq16" target="_blank" class="btn btn-primary" style="width: 100%; font-size: 1.1rem; padding: 15px; text-decoration: none;">Verify Now & Unlock</a>
+              </div>
+            </div>
+
+          </div>
+        </article>
+
+        <h2 class="section-title">More Games You May Like</h2>
+        <div class="games-grid">${relatedGames}</div>
+      `;
+
+      navigateTo('detail');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderHome();
+      renderDirectory();
+    });
+  </script>
+</body>
+</html>
