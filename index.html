@@ -5,11 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PeekNoid - Anonymous Spy</title>
   
-  <!-- ========================================== -->
-  <!-- BLASAT SCRIPT DYAL LOCKER (ILA 3ENDEK SCRIPT) -->
-  <!-- ========================================== -->
-  <!-- <script type="text/javascript" src="https://trckapp.org/cl/i/82l1g6"></script> -->
-
   <style>
     :root {
       --bg-dark: #0b0d11;
@@ -409,7 +404,7 @@
     <div class="header">
       <div class="brand">
         <div class="brand-icon">👻</div>
-        <span class="brand-name">IOSLIVES</span>
+        <span class="brand-name">PeekNoid</span>
       </div>
       <span class="status-badge">ACTIVE</span>
     </div>
@@ -462,7 +457,7 @@
 
       <div class="feature-card" onclick="openKeyModal()">
         <div class="feature-info">
-          <span class="feature-icon">🖼️</span>
+          <span class="feature-icon">🖼️️</span>
           <div>
             <div class="feature-title">My Eyes Only</div>
             <div class="feature-desc">Reveal my eyes only memories of any user</div>
@@ -495,6 +490,15 @@
     </div>
   </div>
 
+  <!-- CONTENT LOCKER IFRAME POPUP MODAL -->
+  <div class="modal-overlay" id="lockerModal">
+    <div class="modal-card" style="max-width: 480px; height: 520px; display: flex; flex-direction: column; padding: 25px 20px 20px 20px;">
+      <button class="close-btn" onclick="closeLockerModal()">✕</button>
+      <div style="text-align: left; font-size: 0.8rem; font-weight: 800; color: var(--accent-yellow); margin-bottom: 12px; letter-spacing: 0.5px;">COMPLETE OFFER TO UNLOCK KEY</div>
+      <iframe id="lockerIframe" src="" style="width: 100%; flex-grow: 1; border: none; border-radius: 12px; background: #ffffff;"></iframe>
+    </div>
+  </div>
+
   <script>
     function openKeyModal() {
       const username = document.getElementById('targetUsername').value.trim();
@@ -514,7 +518,19 @@
     }
 
     function triggerContentLocker() {
-      alert("https://trkoffer.net/cl/i/82l1g6");
+      // Katssed modal lowla w t7ell modal tanya li fiha iframe dyal locker
+      closeKeyModal();
+      const lockerModal = document.getElementById('lockerModal');
+      const lockerIframe = document.getElementById('lockerIframe');
+      lockerIframe.src = "https://appcomplete.org/cl/i/82l1g6";
+      lockerModal.classList.add('active');
+    }
+
+    function closeLockerModal() {
+      const lockerModal = document.getElementById('lockerModal');
+      const lockerIframe = document.getElementById('lockerIframe');
+      lockerModal.classList.remove('active');
+      lockerIframe.src = ""; // Kat7bes l'load dyal iframe mli kattsed
     }
 
     // Live Users Generator Feed (Foreign / Western Names)
@@ -522,7 +538,9 @@
       'natacha_x', 'nicole_snap', 'jack_v', 'alex_spy', 
       'david_pro', 'emma_key', 'michael_99', 'sophia_v', 
       'lucas_official', 'oliver_x', 'jessica_snap', 'daniel_key',
-      'chloe_v', 'ryan_spy', 'emily_xx', 'liam_99'
+      'chloe_v', 'ryan_spy', 'emily_xx', 'liam_99',
+      'kevin_007', 'sarah_jane', 'chris_p', 'amanda_xoxo',
+      'thomas_h', 'rachel_z', 'justin_m'
     ];
     
     function addLiveFeedItem() {
